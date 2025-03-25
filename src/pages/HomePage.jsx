@@ -67,6 +67,7 @@ export function HomePage() {
                 </FormItem>
               )}
             />
+            <p style={{fontSize:"12px"}}>Sample PIN : 1234</p>
             <Button type="submit" variant="ghost" className="bg-black text-white">
               Submit
             </Button>
