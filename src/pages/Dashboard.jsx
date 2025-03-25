@@ -16,17 +16,17 @@ export function Dashboard() {
           <TabsTrigger value="password">To-Do's</TabsTrigger>
         </TabsList>
         <TabsContent value="account">
-          <div class="grid grid-cols-2 gap-4 mt-3">
-            <div class="">
+          <div className="grid grid-cols-2 gap-4 mt-3">
+            <div className="">
               <Graph />
             </div>
-            <div class="text-center">
+            <div className="text-center">
               <CalendarPage />
             </div>
             <div className="">
               <Country />
             </div>
-            <div class="">
+            <div  >
               <Counter />
             </div>
           </div>

@@ -2,9 +2,51 @@ import React, { useState, useEffect } from "react";
 import TodoItem from "./TodoItem";
 import EditModal from "./EditModal";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { Badge } from "@/components/ui/badge";
+const formSchema = z.object({
+  title: z.string().min(2, {
+    message: "title must be at least 2 characters.",
+  }),
+  desc: z.string().min(10, {
+    message: "desc must be at least 10 characters.",
+  }),
+  tag: z.string().min(1, {
+    message: "tag should not be empty.",
+  }),
+});
 
 function Todo() {
-  const [lists, setLists] = useState([
+  const [open, setOpen] = useState(false);
+  const defaultList = [
     {
       id: 1,
       title: "Title 1",
@@ -23,94 +65,211 @@ function Todo() {
       desc: "lorem lipsum  lipsum is dummy text ",
       tag: "Old",
     },
-  ]);
+  ];
+  const [lists, setLists] = useState(defaultList);
 
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [tag, setTag] = useState("");
-  const [selectedList, setSelectedList] = useState(lists[0]);
-  const [showModal, setShowModal] = useState(false);
-
-  function addTask(text) {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      desc: "",
+      tag: "",
+    },
+  });
+  function addtask(values) {
     const newList = {
       id: Date.now(),
-      title,
-      desc,
-      tag,
+      title: values.title,
+      desc: values.desc,
+      tag: values.tag,
     };
+
     setLists([...lists, newList]);
-    setTitle("");
-    setDesc("");
-    setTag("");
   }
 
-  const handleEdit = (list) => {
-    setSelectedList(list);
-    console.log(selectedList);
-    setShowModal(true);
-  };
+  // const [selectedList, setSelectedList] = useState(lists[0]);
+  // const [showModal, setShowModal] = useState(false);
+
+  // const handleEdit = () => {
+  //   setOpen(true);
+  // };
   function deleteTask(id) {
     setLists(lists.filter((list) => list.id !== id));
   }
-  const handleSave = (updatedData) => {
-    setLists((prevData) =>
-      prevData.map((item) =>
-        item.id === updatedData.id ? { ...lists, ...updatedData } : item
-      )
-    );
-  };
+  // const handleSave = (updatedData) => {
+  //   setLists((prevData) =>
+  //     prevData.map((item) =>
+  //       item.id === updatedData.id ? { ...lists, ...updatedData } : item
+  //     )
+  //   );
+  // };
   return (
     <>
-      <ul className="list-unstyled grid grid-cols-2 gap-4">
-        {lists.map((list) => (
-          <TodoItem
-            key={list.id}
-            id={list.id}
-            title={list.title}
-            desc={list.desc}
-            tag={list.tag}
-            list={list}
-            handleEdit={handleEdit}
-            deleteTask={deleteTask}
-          />
-        ))}
-      </ul>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <ul className="list-unstyled grid grid-cols-1 gap-4">
+            {lists.map((list) => (
+              <li className=" list-group mb-2">
+                <Card>
+                  <CardContent>
+                    <CardHeader>
+                      <Badge
+                        variant={`${
+                          list.tag === "New" ? "default" : "secondary"
+                        }`}
+                      >
+                        {list.tag}
+                      </Badge>
+                    </CardHeader>
+                    <CardTitle>{list.title}</CardTitle>
+                    <CardDescription>{list.desc}</CardDescription>
+                    <CardFooter className="flex justify-between">
+                      {/* <Button
+                        className="btn btn-sm btn-success mb-2"
+                        style={{ width: "100px" }}
+                        onClick={() => handleEdit()}
+                      >
+                        Edit
+                      </Button> */}
+                      <Button
+                        className="btn btn-sm btn-danger"
+                        variant="outline"
+                        style={{ width: "100px" }}
+                        onClick={() => deleteTask(list.id)}
+                      >
+                        Remove
+                      </Button>
+                    </CardFooter>
+                  </CardContent>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <div className="d-flex border p-2 rounded bg-light">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(addtask)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter Title" {...field} />
+                      </FormControl>
 
-      <div className="d-flex">
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title"
-          className="form-control"
-        />
-        <input
-          value={desc}
-          onChange={(e) => setDesc(e.target.value)}
-          placeholder="Description"
-          className="form-control"
-        />
-        <input
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-          placeholder="Tag"
-          className="form-control"
-        />
-        <Button
-          onClick={() => addTask(title)}
-          className="btn btn-sm btn-secondary px-3 ms-3"
-        >
-          Add
-        </Button>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="desc"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter Description" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="tag"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tag</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter Tag" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  className="bg-black text-white"
+                >
+                  Submit
+                </Button>
+              </form>
+            </Form>
+          </div>
+        </div>
       </div>
+      <Dialog open={open} onClose={setOpen} className="relative z-10">
+        <DialogBackdrop
+          transition
+          className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+        />
 
-      {selectedList && (
+        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <DialogPanel
+              transition
+              className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+            >
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                    <ExclamationTriangleIcon
+                      aria-hidden="true"
+                      className="size-6 text-red-600"
+                    />
+                  </div>
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <DialogTitle
+                      as="h3"
+                      className="text-base font-semibold text-gray-900"
+                    >
+                      Deactivate account
+                    </DialogTitle>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Are you sure you want to deactivate your account? All of
+                        your data will be permanently removed. This action
+                        cannot be undone.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <Button
+                  className="btn btn-sm btn-success mb-2"
+                  style={{ width: "100px" }}
+                  onClick={() => setOpen(false)}
+                >
+                  Update
+                </Button>
+                <Button
+                  className="btn btn-sm btn-danger"
+                  variant="outline"
+                  style={{ width: "100px" }}
+                  onClick={() => setOpen(false)}
+                >
+                  Cancel
+                </Button>
+                
+              </div>
+            </DialogPanel>
+          </div>
+        </div>
+      </Dialog>
+      {/* {selectedList && (
         <EditModal
           open={showModal}
           handleClose={() => setShowModal(false)}
           data={selectedList}
           onSave={handleSave}
         />
-      )}
+      )} */}
     </>
   );
 }
