@@ -5,10 +5,27 @@ import Country from "./Country";
 import Graph from "./Graph";
 import CalendarPage from "./CalendarPage";
 import Todo from "./Todo";
+import { Button } from "@/components/ui/button";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export function Dashboard() {
+  const navigate = useNavigate();
+  const ratingPage = () => {
+ 
+    navigate("/rating");
+  };
   return (
     <>
-      <h1>Welcome to Mani's Portfolio</h1>
+      <div className="flex justify-between">
+        <h1>Welcome to Mani's Portfolio</h1>
+        <Button
+          onClick={() => ratingPage()}
+          variant="destructive"
+          className="bg-black"
+        >
+          Rating
+        </Button>
+      </div>
 
       <Tabs defaultValue="account" className="w-[800px] mt-3 custom-tab">
         <TabsList className="custom-tab">
@@ -26,13 +43,13 @@ export function Dashboard() {
             <div className="">
               <Country />
             </div>
-            <div  >
+            <div>
               <Counter />
             </div>
           </div>
         </TabsContent>
         <TabsContent value="password">
-          <Todo/>
+          <Todo />
         </TabsContent>
       </Tabs>
     </>

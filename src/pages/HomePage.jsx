@@ -39,38 +39,38 @@ export function HomePage() {
   }
   return (
     <>
-      <div class="flex items-center min-h-screen p-2  lg:justify-center">
-        <div class="flex flex-col overflow-hidden bg-white rounded-md shadow-lg max md:flex-row md:flex-1 lg:max-w-screen-md">
-          <div class="p-4 py-6 text-white bg-blue-500 md:w-90 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
-            <div class="my-3 text-4xl font-bold tracking-wider text-center">
+      <div className="flex items-center min-h-screen p-2  lg:justify-center">
+        <div className="flex flex-col overflow-hidden bg-white rounded-md shadow-lg max md:flex-row md:flex-1 lg:max-w-screen-md">
+          <div className="p-4 py-6 text-white bg-blue-500 md:w-90 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
+            <div className="my-3 text-4xl font-bold tracking-wider text-center">
               <a href="#" className="text-primary-foreground">
                 Welcome!!!
               </a>
             </div>
-            <p class="mt-6 font-normal text-center text-gray-300 md:mt-0">
+            <p className="mt-6 font-normal text-center text-gray-300 md:mt-0">
               There are many variations of passages of Lorem Ipsum available,
               but the majority have suffered alteration in some form, by
               injected humour, or randomised words which don't look even
               slightly believable.!
             </p>
-            <p class="flex flex-col items-center justify-center mt-10 text-center">
-              <a href="#" class="underline">
+            <p className="flex flex-col items-center justify-center mt-10 text-center">
+              <a href="#" className="underline">
                 Get Started!
               </a>
             </p>
-            <p class="mt-6 text-sm text-center text-gray-300">
+            <p className="mt-6 text-sm text-center text-gray-300">
               Read our
-              <a href="#" class="underline ml-1 mr-1">
+              <a href="#" className="underline ml-1 mr-1">
                 terms
               </a>
               and
-              <a href="#" class="underline ml-1">
+              <a href="#" className="underline ml-1">
                 conditions
               </a>
             </p>
           </div>
-          <div class="p-5 bg-white md:flex-1">
-            <h3 class="my-4 text-2xl font-semibold text-gray-700">
+          <div className="p-5 bg-white md:flex-1">
+            <h3 className="my-4 text-2xl font-semibold text-gray-700">
               Account PIN
             </h3>
              

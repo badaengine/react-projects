@@ -80,3 +80,7 @@
   color:#fff !important;
   text-decoration: underline !important;
 }
+.rating-section li.selected a {
+  background-color: black;
+  color: #fff;
+}
