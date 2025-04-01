@@ -84,3 +84,27 @@
   background-color: black;
   color: #fff;
 }
+.ratings {
+  position: relative;
+  vertical-align: middle;
+  display: inline-block;
+  color: #b1b1b1;
+  overflow: hidden;
+}
+.empty-stars:before, .full-stars:before {
+  content: "\2605\2605\2605\2605\2605";
+  font-size: 20px;
+}
+.star-div{
+  height: 32.4px;
+  line-height: 32.4px;
+  font-size: 13px;
+}
+.full-stars {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #fde16d;
+}

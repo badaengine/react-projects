@@ -1,4 +1,4 @@
-import {React,useState} from "react";
+import { React, useState } from "react";
 
 import {
   Accordion,
@@ -15,8 +15,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
 export function Rating() {
-  //const [open, setOpen] = React.useState(1);
+ 
 
   const questionList = [
     {
@@ -50,16 +51,15 @@ export function Rating() {
   const num = [0, 1, 2, 3, 4, 5];
   const [rangeValue, setRangeValue] = useState({});
   const handlePageClick = (e, pageNumber, QIndex, StarIndex) => {
-    console.log(StarIndex)
+    console.log(StarIndex);
     e.preventDefault();
     setRangeValue((prevState) => ({
       ...prevState,
       [`${QIndex}-${StarIndex}`]: pageNumber,
     }));
-   
   };
 
-  const handlePrev= (e, categoryIndex, questionIndex) => {
+  const handlePrev = (e, categoryIndex, questionIndex) => {
     e.preventDefault();
     const prevNumber = rangeValue[`${categoryIndex}-${questionIndex}`] - 1;
     if (prevNumber >= 0) {
@@ -67,10 +67,9 @@ export function Rating() {
         ...prevState,
         [`${categoryIndex}-${questionIndex}`]: prevNumber,
       }));
-      
     }
   };
-  const handleNext= (e, categoryIndex, questionIndex) => {
+  const handleNext = (e, categoryIndex, questionIndex) => {
     e.preventDefault();
     const prevNumber = rangeValue[`${categoryIndex}-${questionIndex}`] + 1;
     if (prevNumber <= 5) {
@@ -78,9 +77,38 @@ export function Rating() {
         ...prevState,
         [`${categoryIndex}-${questionIndex}`]: prevNumber,
       }));
-      
     }
   };
+
+  const SetInitialState = () => {
+    const initialState = {};
+    questionList.forEach((QData, Index) => {
+      QData.questions.forEach((_, questionIndex) => {
+        initialState[`${Index}-${questionIndex}`] = 0;
+      });
+    });
+    setRangeValue(initialState);
+  };
+
+  const starRange = (categoryIndex) => {
+    const categoryRatings = questionList[categoryIndex].questions
+      .map((_, idx) => {
+        return rangeValue[`${categoryIndex}-${idx}`] || 0;
+      })
+      .filter((rating) => rating > 0);
+
+    if (categoryRatings.length === 0) {
+      return "0%";
+    }
+
+    const totalRating = categoryRatings.reduce((a, val) => a + val, 0);
+    const width = 20 + (totalRating - 1) * 20;
+    const totalWidth = width / categoryRatings.length;
+    return `${Math.min(totalWidth, 100)}%`;
+  };
+  const ClearRating = () => {
+    SetInitialState();
+  }
   return (
     <>
       <div className="w-[1000px]">
@@ -88,7 +116,18 @@ export function Rating() {
         <Accordion type="single" collapsible className="w-full rating-section">
           {questionList.map((item, QIndex) => (
             <AccordionItem value={`item-${QIndex}`} key={QIndex}>
-              <AccordionTrigger>{item.title}</AccordionTrigger>
+              <AccordionTrigger className="flex justify-between items-center">
+                <div>{item.title}</div>
+                <div className="star-div">
+                  <div className="ratings">
+                    <div className="empty-stars"></div>
+                    <div
+                      className="full-stars"
+                      style={{ width: starRange(QIndex) }}
+                    ></div>
+                  </div>
+                </div>
+              </AccordionTrigger>
               <AccordionContent className="border p-2">
                 {item.questions.map((question, idx) => (
                   <div className="flex justify-between mb-2">
@@ -97,9 +136,9 @@ export function Rating() {
                       <Pagination>
                         <PaginationContent>
                           <PaginationItem>
-                            <PaginationPrevious  onClick={(e) =>
-                                  handlePrev(e, QIndex, idx)
-                                } />
+                            <PaginationPrevious
+                              onClick={(e) => handlePrev(e, QIndex, idx)}
+                            />
                           </PaginationItem>
                           {num.map((pageNumber, index) => (
                             <PaginationItem
@@ -122,9 +161,9 @@ export function Rating() {
                           ))}
 
                           <PaginationItem>
-                            <PaginationNext onClick={(e) =>
-                                  handleNext(e, QIndex, idx)
-                                } />
+                            <PaginationNext
+                              onClick={(e) => handleNext(e, QIndex, idx)}
+                            />
                           </PaginationItem>
                         </PaginationContent>
                       </Pagination>
@@ -135,6 +174,8 @@ export function Rating() {
             </AccordionItem>
           ))}
         </Accordion>
+
+        <Button className="mt-5 cursor-pointer" type="submit" onClick={ ClearRating}>CLEAR ALL</Button>
       </div>
     </>
   );
