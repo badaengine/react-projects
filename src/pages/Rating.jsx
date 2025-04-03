@@ -16,9 +16,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
+import Summary from "./Summary";
 export function Rating() {
- 
-
   const questionList = [
     {
       title: "Understanding Machine Learning",
@@ -47,18 +46,109 @@ export function Rating() {
     },
   ];
 
+  // const mylist = [
+  //   {
+  //     title: "Understanding Machine Learning",
+  //     questions: [
+  //       {
+  //         qn: "What is machine learning?",
+  //         ans: 0,
+  //       },
+  //       {
+  //         qn: "How does machine learning work?",
+  //         ans: 0,
+  //       },
+  //       {
+  //         qn: "What are the different types of machine learning?",
+  //         ans: 0,
+  //       }
+  //     ],
+  //   },
+  //   {
+  //     title: "Understanding Machine Learning",
+  //     questions: [
+  //       {
+  //         qn: "What is machine learning?",
+  //         ans: 0,
+  //       },
+  //       {
+  //         qn: "How does machine learning work?",
+  //         ans: 0,
+  //       },
+  //       {
+  //         qn: "What are the different types of machine learning?",
+  //         ans: 0,
+  //       }
+  //     ],
+  //   },
+  //   {
+  //     title: "Understanding Machine Learning",
+  //     questions: [
+  //       {
+  //         qn: "What is machine learning?",
+  //         ans: 0,
+  //       },
+  //       {
+  //         qn: "How does machine learning work?",
+  //         ans: 0,
+  //       },
+  //       {
+  //         qn: "What are the different types of machine learning?",
+  //         ans: 0,
+  //       }
+  //     ],
+  //   }
+  // ];
+
   //const handleOpen = (value) => setOpen(open === value ? 0 : value);
+
+
+  // { month: "January", desktop: 186, mobile: 80 },
   const num = [0, 1, 2, 3, 4, 5];
-  const [rangeValue, setRangeValue] = useState({});
+  const [rangeValue, setRangeValue] = useState(questionList);
+  const [graphValue, setGraphValue] = useState([]);
   const handlePageClick = (e, pageNumber, QIndex, StarIndex) => {
-    console.log(StarIndex);
+    //console.log(StarIndex);
     e.preventDefault();
+
     setRangeValue((prevState) => ({
       ...prevState,
       [`${QIndex}-${StarIndex}`]: pageNumber,
     }));
-  };
+   // console.log(rangeValue[QIndex].questions[StarIndex])
+ 
 
+    setGraphValue((prevSummary) => {
+      console.log("all qn",questionList[QIndex].questions)
+ 
+        const updatedSummary = prevSummary.map((item) => {
+        //update
+        console.log('item', item)
+        if (item.title === questionList[QIndex].title) {
+          console.log(questionList[QIndex].questions[StarIndex])
+          return {
+            ...item,
+            [questionList[QIndex].questions[StarIndex]]: pageNumber,
+          };
+        }
+        return item;
+      });
+      //add
+ 
+      if (!updatedSummary.some((item) => item.title === questionList[QIndex].title)) {
+        updatedSummary.push({
+          title: questionList[QIndex].title,
+          [questionList[QIndex].questions[StarIndex]]: pageNumber,
+        });
+      }
+ 
+      return updatedSummary;
+
+     
+    });
+    console.log("final",graphValue)
+  };
+   
   const handlePrev = (e, categoryIndex, questionIndex) => {
     e.preventDefault();
     const prevNumber = rangeValue[`${categoryIndex}-${questionIndex}`] - 1;
@@ -108,7 +198,7 @@ export function Rating() {
   };
   const ClearRating = () => {
     SetInitialState();
-  }
+  };
   return (
     <>
       <div className="w-[1000px]">
@@ -174,8 +264,16 @@ export function Rating() {
             </AccordionItem>
           ))}
         </Accordion>
-
-        <Button className="mt-5 cursor-pointer" type="submit" onClick={ ClearRating}>CLEAR ALL</Button>
+        <div className="flex justify-between items-center">
+          <Summary graphValue={graphValue} />
+          <Button
+            className="mt-5 cursor-pointer"
+            type="button"
+            onClick={ClearRating}
+          >
+            CLEAR ALL
+          </Button>
+        </div>
       </div>
     </>
   );
